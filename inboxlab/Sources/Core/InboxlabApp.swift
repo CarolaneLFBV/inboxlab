@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct InboxlabApp: App {
+struct App: SwiftUI.App {
     var body: some Scene {
         WindowGroup {
             ContentView()
