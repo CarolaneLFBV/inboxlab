@@ -21,7 +21,10 @@ let project = Project(
                 "inboxlab/Sources",
                 "inboxlab/Resources",
             ],
-            dependencies: []
+            dependencies: [],
+            settings: .settings(
+                base: ["SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor"]
+            )
         ),
         .target(
             name: "inboxlabTests",

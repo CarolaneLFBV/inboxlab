@@ -28,6 +28,13 @@ extension App.Inbox.Data {
                 let id = UUID()
                 continuations[id] = continuation // conserve continuation -> send futur updates
                 continuation.yield(messages) // envoie valeur dans le flux
+                
+                // Retire abonnement à la terminaison du flux
+                continuation.onTermination = { [weak self] _ in
+                    Task { @MainActor [weak self] in
+                        self?.continuations.removeValue(forKey: id)
+                    }
+                }
             }
         }
         
