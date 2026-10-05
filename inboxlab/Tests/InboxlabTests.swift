@@ -53,5 +53,38 @@ struct InboxlabTests {
         #expect(receivedUpdatedMessage1.hasBeenRead)
         #expect(receivedUpdatedMessage2.hasBeenRead)
     }
-
+    
+    @Test @MainActor
+    func remainingObserverReceivesUpdatesAfterCancellation() async throws {
+        let unread = App.Inbox.Domain.Message.mockUnread
+        let sut = App.Inbox.Data.Repository(messages: [unread])
+        
+        let detailStream = sut.observe()
+        let listStream = sut.observe()
+        
+        let detailTask = Task { @MainActor in
+            for await _ in detailStream {}
+        }
+        
+        var iterator = listStream.makeAsyncIterator()
+        let initialMessage = await iterator.next()
+        
+        let messages = try #require(initialMessage)
+        #expect(messages.count == 1)
+        
+        let receivedMessage = try #require(messages.first)
+        #expect(!receivedMessage.hasBeenRead)
+        
+        detailTask.cancel()
+        await detailTask.value
+        try await sut.markAsRead(id: unread.id)
+        
+        let updatedMessages = await iterator.next()
+        let unwrappedUpdatedMessages = try #require(updatedMessages)
+        #expect(unwrappedUpdatedMessages.count == 1)
+        
+        let updatedMessage = try #require(unwrappedUpdatedMessages.first)
+        #expect(updatedMessage.id == unread.id)
+        #expect(updatedMessage.hasBeenRead)
+    }
 }
