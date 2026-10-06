@@ -1,5 +1,5 @@
 //
-//  Repository.swift
+//  InMemoryRepository.swift
 //  inboxlab
 //
 //  Created by Carolane Lefebvre on 04/10/2026.
@@ -8,7 +8,7 @@
 import Foundation
 
 extension App.Inbox.Data {
-    final class Repository: App.Inbox.Domain.Providing {
+    final class InMemoryRepository: App.Inbox.Domain.Providing {
         private var messages: [App.Inbox.Domain.Message]
         // Conserve une continuation par abonnement pour diffuser les changements de messages à chaque observateur
         private var continuations: [UUID: AsyncStream<[App.Inbox.Domain.Message]>.Continuation] = [:]

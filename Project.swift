@@ -2,6 +2,12 @@ import ProjectDescription
 
 let project = Project(
     name: "inboxlab",
+    packages: [
+        .remote(
+            url: "https://github.com/realm/realm-swift",
+            requirement: .exact("20.0.6")
+        )
+    ],
     targets: [
         .target(
             name: "inboxlab",
@@ -21,7 +27,9 @@ let project = Project(
                 "inboxlab/Sources",
                 "inboxlab/Resources",
             ],
-            dependencies: [],
+            dependencies: [
+                .package(product: "RealmSwift")
+            ],
             settings: .settings(
                 base: ["SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor"]
             )
