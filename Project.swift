@@ -44,7 +44,16 @@ let project = Project(
             buildableFolders: [
                 "inboxlab/Tests"
             ],
-            dependencies: [.target(name: "inboxlab")]
+            dependencies: [
+                .target(name: "inboxlab"),
+                .package(product: "RealmSwift")
+            ],
+            settings: .settings(
+                base: [
+                    "OTHER_LDFLAGS": "$(inherited) -framework RealmSwift",
+                    "FRAMEWORK_SEARCH_PATHS": "$(inherited) $(BUILT_PRODUCTS_DIR)/PackageFrameworks"
+                ]
+            )
         ),
     ]
 )
