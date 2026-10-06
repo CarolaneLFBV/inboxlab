@@ -7,11 +7,7 @@
 
 import SwiftUI
 
-private extension App.Inbox.Presentation.View {
-    enum Layout {
-        static let dotSize: CGFloat = 10.0
-    }
-}
+
 
 extension App.Inbox.Presentation {
     struct View: SwiftUI.View {
@@ -22,10 +18,12 @@ extension App.Inbox.Presentation {
         }
         
         var body: some SwiftUI.View {
-            content
-                .task {
-                    await viewModel.observeMessages()
-                }
+            NavigationStack {
+                content
+                    .task {
+                        await viewModel.observeMessages()
+                    }
+            }
         }
     }
 }
@@ -33,21 +31,13 @@ extension App.Inbox.Presentation {
 private extension App.Inbox.Presentation.View {
     var content: some SwiftUI.View {
         List(viewModel.messages) { message in
-            HStack {
-                VStack(alignment: .leading){
-                    Text(message.sender)
-                        .font(.headline)
-                    Text(message.subject)
-                        .font(.subheadline)
+            NavigationLink(destination: App.Inbox.Presentation.MessageDetailView(
+                message: message,
+                onOpen: {
+                    try await viewModel.markMessageAsRead(id: message.id)
                 }
-                
-                Spacer()
-                
-                if !message.hasBeenRead {
-                    Circle()
-                        .fill(.blue)
-                        .frame(width: Layout.dotSize, height: Layout.dotSize)
-                }
+            )) {
+                App.Inbox.Presentation.MailRowComponent(message: message)
             }
         }
     }

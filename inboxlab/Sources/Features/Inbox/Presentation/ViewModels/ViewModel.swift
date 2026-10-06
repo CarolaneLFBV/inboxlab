@@ -17,12 +17,16 @@ extension App.Inbox.Presentation {
             self.repository = repository
         }
         
-        // MARK: Methods
+        // MARK: - Methods
         func observeMessages() async {
             let stream = repository.observe()
             for await receivedMessages in stream {
                 self.messages = receivedMessages
             }
+        }
+        
+        func markMessageAsRead(id: UUID) async throws {
+            try await repository.markAsRead(id: id)
         }
     }
 }
