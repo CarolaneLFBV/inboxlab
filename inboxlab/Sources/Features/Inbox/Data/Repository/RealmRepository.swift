@@ -18,6 +18,12 @@ extension App.Inbox.Data {
         
         // MARK: - Methods
         
+        /// Observe messages saved dans Realm
+        ///
+        /// Émet liste initiale, puis new list à chaque notification d'update.
+        /// Objets Realm -> Modèles Domain
+        ///
+        /// - returns: flux listes de message
         func observe() -> AsyncStream<[App.Inbox.Domain.Message]> {
             let results = realm.objects(App.Inbox.Data.MessageObject.self)
             return AsyncStream { continuation in
@@ -40,6 +46,10 @@ extension App.Inbox.Data {
             }
         }
         
+        /// Marque message comme lu dans transaction Realm
+        ///
+        /// - params(id): id message à edit
+        /// - throws: erreur si transaction d'écriture échoue
         func markAsRead(id: UUID) async throws {
             guard let message = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: id),
                   !message.hasBeenRead else { return }
@@ -49,6 +59,12 @@ extension App.Inbox.Data {
             }
         }
         
+        /// Save messages Domain dans une transaction Realm
+        ///
+        /// Convertit messages en objets persistés et update objets existants w/ même clé primaire
+        ///
+        /// - params(messages): messages à enregistrer
+        /// - throws: erreur si transaction d'écriture échoue
         func save(messages: [App.Inbox.Domain.Message]) throws {
             // conversion
             let objects = messages.map {
