@@ -9,7 +9,11 @@ struct App: SwiftUI.App {
     init() {
         do {
             let realm = try Realm()
-            let repository = App.Inbox.Data.RealmRepository(realm: realm)
+            let fetching = App.Inbox.Data.PreviewFetcher(messages: App.Inbox.Domain.Message.mocks) // temporary
+            let repository = App.Inbox.Data.RealmRepository(
+                realm: realm,
+                fetching: fetching
+            )
             let viewModel = App.Inbox.Presentation.ViewModel(repository: repository)
             self.errorMessage = nil
 

@@ -49,5 +49,10 @@ extension App.Inbox.Data {
                 continuation.yield(messages)
             }
         }
+        
+        /// Réalise aucune opération car les messages sont fournis en mémoire sans source distante à rafraîchir.
+        func refresh() async throws {
+            
+        }
     }
 }

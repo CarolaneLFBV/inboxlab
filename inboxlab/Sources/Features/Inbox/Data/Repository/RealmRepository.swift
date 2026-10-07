@@ -11,9 +11,14 @@ import RealmSwift
 extension App.Inbox.Data {
     final class RealmRepository: App.Inbox.Domain.Providing {
         private let realm: Realm
+        private let fetching: App.Inbox.Domain.Fetching
         
-        init(realm: Realm) {
+        init(
+            realm: Realm,
+            fetching: App.Inbox.Domain.Fetching
+        ) {
             self.realm = realm
+            self.fetching = fetching
         }
         
         // MARK: - Methods
@@ -75,6 +80,15 @@ extension App.Inbox.Data {
             try realm.write {
                 realm.add(objects, update: .modified)
             }
+        }
+        
+        /// Fetch messages distants et sauvegarde dans Realm
+        /// Changements diffusés par observation de la base
+        ///
+        /// - throws: erreur récupération ou sauvegarde
+        func refresh() async throws {
+            let messages = try await fetching.fetchMessages()
+            try save(messages: messages)
         }
     }
 }

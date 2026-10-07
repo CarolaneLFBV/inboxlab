@@ -17,7 +17,7 @@ struct RealmRepositoryTests {
     func savingMessagePreservesItsData() throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try Realm(configuration: configuration)
-        let sut = App.Inbox.Data.RealmRepository(realm: realm)
+        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
         let unread = App.Inbox.Domain.Message.mockUnread
         
         try sut.save(messages: [unread])
@@ -40,7 +40,7 @@ struct RealmRepositoryTests {
     func savingSameMessageTwiceUpdateWithoutDuplicating() throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try Realm(configuration: configuration)
-        let sut = App.Inbox.Data.RealmRepository(realm: realm)
+        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
         let unread = App.Inbox.Domain.Message.mockUnread
         
         try sut.save(messages: [unread])
@@ -61,7 +61,7 @@ struct RealmRepositoryTests {
     func markAsReadUpdatesStoredMessage() async throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try await Realm(configuration: configuration)
-        let sut = App.Inbox.Data.RealmRepository(realm: realm)
+        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
         let unread = App.Inbox.Domain.Message.mockUnread
         
         try sut.save(messages: [unread])
@@ -77,7 +77,7 @@ struct RealmRepositoryTests {
     func observeEmitsUpdatedReadStatus() async throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try await Realm(configuration: configuration)
-        let sut = App.Inbox.Data.RealmRepository(realm: realm)
+        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
         let unread = App.Inbox.Domain.Message.mockUnread
         
         try sut.save(messages: [unread])
@@ -96,5 +96,51 @@ struct RealmRepositoryTests {
         let updatedMessage = try #require(updatedMessages.first)
         #expect(updatedMessage.id == unread.id)
         #expect(updatedMessage.hasBeenRead)
+    }
+    
+    @Test @MainActor
+    func refreshStoresFetchedMessages() async throws {
+        let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
+        let realm = try await Realm(configuration: configuration)
+        let unread = App.Inbox.Domain.Message.mockUnread
+        
+        let fetcher = MessageFetcherStub(messages: [unread])
+        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
+        
+        try await sut.refresh()
+        
+        let objects = realm.objects(App.Inbox.Data.MessageObject.self)
+        #expect(objects.count == 1)
+        
+        let object = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
+        let result = try #require(object)
+        
+        #expect(result.id == unread.id)
+        #expect(result.subject == unread.subject)
+    }
+    
+    @Test @MainActor
+    func refreshFailurePreservesStoredMessages() async throws {
+        let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
+        let realm = try await Realm(configuration: configuration)
+        let unread = App.Inbox.Domain.Message.mockUnread
+        
+        let fetcher = FailingMessageFetcherStub()
+        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
+        
+        try sut.save(messages: [unread])
+        
+        await #expect(throws: FailingMessageFetcherStub.Error.networkUnavailable) {
+            try await sut.refresh()
+        }
+        
+        let objects = realm.objects(App.Inbox.Data.MessageObject.self)
+        #expect(objects.count == 1)
+        
+        let object = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
+        let result = try #require(object)
+        
+        #expect(result.id == unread.id)
+        #expect(!result.hasBeenRead)
     }
 }
