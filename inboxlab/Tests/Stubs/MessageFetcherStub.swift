@@ -7,15 +7,16 @@
 
 import Foundation
 @testable import inboxlab
+import InboxDomain
 
-final class MessageFetcherStub: App.Inbox.Domain.Fetching {
-    private let messages: [App.Inbox.Domain.Message]
+final class MessageFetcherStub: Inbox.Domain.Fetching {
+    private let messages: [Inbox.Domain.Message]
     
-    init(messages: [App.Inbox.Domain.Message]) {
+    init(messages: [Inbox.Domain.Message]) {
         self.messages = messages
     }
     
-    func fetchMessages() async throws -> [App.Inbox.Domain.Message] {
+    func fetchMessages() async throws -> [Inbox.Domain.Message] {
         messages
     }
 }

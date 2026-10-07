@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import InboxDomain
 
-extension App.Inbox.Data {
+extension Inbox.Data {
     nonisolated struct MessageResponse: Decodable {
         let id: Int
         let sender: String
@@ -21,8 +22,8 @@ extension App.Inbox.Data {
             case content = "body"
         }
         
-        func toDomain() -> App.Inbox.Domain.Message {
-            App.Inbox.Domain.Message(
+        func toDomain() -> Inbox.Domain.Message {
+            Inbox.Domain.Message(
                 id: self.id,
                 sender: self.sender,
                 recipient: "test@test.com",

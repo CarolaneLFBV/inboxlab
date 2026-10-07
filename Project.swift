@@ -28,12 +28,15 @@ let project = Project(
                 ]
             ),
             buildableFolders: [
-                "inboxlab/Sources",
+                "inboxlab/Sources/Core",
+                "inboxlab/Sources/Features/Inbox/Data",
+                "inboxlab/Sources/Features/Inbox/Presentation",
                 "inboxlab/Resources",
             ],
             dependencies: [
                 .package(product: "RealmSwift", type: .runtimeEmbedded),
-                .package(product: "Alamofire")
+                .package(product: "Alamofire"),
+                .target(name: "InboxDomain"),
             ],
             settings: .settings(
                 base: ["SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor"]
@@ -61,5 +64,15 @@ let project = Project(
                 ]
             )
         ),
+        .target(
+            name: "InboxDomain",
+            destinations: .iOS,
+            product: .framework,
+            bundleId: "dev.tuist.inboxlab.domain",
+            deploymentTargets: .iOS("18.0"),
+            buildableFolders: [
+                "inboxlab/Sources/Features/Inbox/Domain"
+            ]
+        )
     ]
 )

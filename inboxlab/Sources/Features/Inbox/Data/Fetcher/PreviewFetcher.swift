@@ -6,16 +6,17 @@
 //
 
 import Foundation
+import InboxDomain
 
-extension App.Inbox.Data {
-    final class PreviewFetcher: App.Inbox.Domain.Fetching {
-        private let messages: [App.Inbox.Domain.Message]
+extension Inbox.Data {
+    final class PreviewFetcher: Inbox.Domain.Fetching {
+        private let messages: [Inbox.Domain.Message]
         
-        init(messages: [App.Inbox.Domain.Message]) {
+        init(messages: [Inbox.Domain.Message]) {
             self.messages = messages
         }
         
-        func fetchMessages() async throws -> [App.Inbox.Domain.Message] {
+        func fetchMessages() async throws -> [Inbox.Domain.Message] {
             messages
         }
     }

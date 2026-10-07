@@ -6,17 +6,14 @@
 //
 
 import Foundation
+import InboxDomain
 
 extension App {
     enum Core {}
     enum DesignSystem {}
-    
-    // MARK: - Feature
-    enum Inbox {}
 }
 
-extension App.Inbox {
-    enum Domain {}
+extension Inbox {
     enum Data {}
     enum Presentation {}
 }

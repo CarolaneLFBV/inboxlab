@@ -7,16 +7,36 @@
 
 import Foundation
 
-extension App.Inbox.Domain {
+public extension Inbox.Domain {
     struct Message: Identifiable {
-        let id: Int
-        let sender: String
-        let recipient: String
-        let ccRecipients: [String]
-        let subject: String
-        let content: String
-        let receivedAt: Date
-        var hasBeenRead: Bool
+        public let id: Int
+        public let sender: String
+        public let recipient: String
+        public let ccRecipients: [String]
+        public let subject: String
+        public let content: String
+        public let receivedAt: Date
+        public var hasBeenRead: Bool
+        
+        public init(
+            id: Int,
+            sender: String,
+            recipient: String,
+            ccRecipients: [String],
+            subject: String,
+            content: String,
+            receivedAt: Date,
+            hasBeenRead: Bool
+        ) {
+            self.id = id
+            self.sender = sender
+            self.recipient = recipient
+            self.ccRecipients = ccRecipients
+            self.subject = subject
+            self.content = content
+            self.receivedAt = receivedAt
+            self.hasBeenRead = hasBeenRead
+        }
     }
 }
 

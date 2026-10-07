@@ -6,16 +6,17 @@
 //
 
 import SwiftUI
+import InboxDomain
 
-private extension App.Inbox.Presentation.MailRowComponent {
+private extension Inbox.Presentation.MailRowComponent {
     enum Layout {
         static let dotSize: CGFloat = 10.0
     }
 }
 
-extension App.Inbox.Presentation {
+extension Inbox.Presentation {
     struct MailRowComponent: SwiftUI.View {
-        let message: App.Inbox.Domain.Message
+        let message: Inbox.Domain.Message
         
         var body: some SwiftUI.View {
             HStack {

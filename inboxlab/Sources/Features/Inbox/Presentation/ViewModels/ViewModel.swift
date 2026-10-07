@@ -6,15 +6,16 @@
 //
 
 import Foundation
+import InboxDomain
 
-extension App.Inbox.Presentation {
+extension Inbox.Presentation {
     @Observable
     final class ViewModel {
-        private let repository: App.Inbox.Domain.Providing
-        private(set) var messages: [App.Inbox.Domain.Message] = []
+        private let repository: Inbox.Domain.Providing
+        private(set) var messages: [Inbox.Domain.Message] = []
         private(set) var errorMessage: String? = nil
         
-        init(repository: App.Inbox.Domain.Providing) {
+        init(repository: Inbox.Domain.Providing) {
             self.repository = repository
         }
         

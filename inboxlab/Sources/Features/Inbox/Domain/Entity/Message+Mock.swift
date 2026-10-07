@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension App.Inbox.Domain.Message {
+public extension Inbox.Domain.Message {
     static var mockUnread: Self {
         Self(
             id: 123,

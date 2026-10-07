@@ -6,14 +6,13 @@
 //
 
 import SwiftUI
+import InboxDomain
 
-
-
-extension App.Inbox.Presentation {
+extension Inbox.Presentation {
     struct View: SwiftUI.View {
-        @State private var viewModel: App.Inbox.Presentation.ViewModel
+        @State private var viewModel: Inbox.Presentation.ViewModel
         
-        init(viewModel: App.Inbox.Presentation.ViewModel) {
+        init(viewModel: Inbox.Presentation.ViewModel) {
             _viewModel = State(initialValue: viewModel)
         }
         
@@ -46,16 +45,16 @@ extension App.Inbox.Presentation {
     }
 }
 
-private extension App.Inbox.Presentation.View {
+private extension Inbox.Presentation.View {
     var content: some SwiftUI.View {
         List(viewModel.messages) { message in
-            NavigationLink(destination: App.Inbox.Presentation.MessageDetailView(
+            NavigationLink(destination: Inbox.Presentation.MessageDetailView(
                 message: message,
                 onOpen: {
                     try await viewModel.markMessageAsRead(id: message.id)
                 }
             )) {
-                App.Inbox.Presentation.MailRowComponent(message: message)
+                Inbox.Presentation.MailRowComponent(message: message)
             }
         }
     }

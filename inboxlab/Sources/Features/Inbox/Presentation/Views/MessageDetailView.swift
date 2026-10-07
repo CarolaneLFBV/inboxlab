@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import InboxDomain
 
-extension App.Inbox.Presentation {
+extension Inbox.Presentation {
     struct MessageDetailView: SwiftUI.View {
         @State private var errorMessage: String?
-        let message: App.Inbox.Domain.Message
+        let message: Inbox.Domain.Message
         let onOpen: () async throws -> Void
         
         private var formattedDate: String {
@@ -35,22 +36,22 @@ extension App.Inbox.Presentation {
     }
 }
 
-private extension App.Inbox.Presentation.MessageDetailView {
+private extension Inbox.Presentation.MessageDetailView {
     var mailInformations: some SwiftUI.View {
         VStack(spacing: 8) {
-            App.Inbox.Presentation.MailInformation(
+            Inbox.Presentation.MailInformation(
                 label: "from:",
                 icon: "person.circle",
                 value: message.sender
             )
             
-            App.Inbox.Presentation.MailInformation(
+            Inbox.Presentation.MailInformation(
                 label: "to:",
                 icon: "person.circle",
                 value: message.recipient
             )
             
-            App.Inbox.Presentation.MailInformation(
+            Inbox.Presentation.MailInformation(
                 label: "received at:",
                 icon: "calendar",
                 value: formattedDate
@@ -77,11 +78,4 @@ private extension App.Inbox.Presentation.MessageDetailView {
         .padding(.top, 4)
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
-}
-
-#Preview {
-    App.Inbox.Presentation.MessageDetailView(
-        message: App.Inbox.Domain.Message.mockUnread,
-        onOpen: {}
-    )
 }

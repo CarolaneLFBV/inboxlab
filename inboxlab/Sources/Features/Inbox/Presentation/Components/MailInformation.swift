@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import InboxDomain
 
-extension App.Inbox.Presentation {
+extension Inbox.Presentation {
     struct MailInformation: SwiftUI.View {
         let label: String
         let icon: String

@@ -7,8 +7,9 @@
 
 import Foundation
 import RealmSwift
+import InboxDomain
 
-extension App.Inbox.Data {
+extension Inbox.Data {
     @objc(InboxMessageObject)
     class MessageObject: Object {
         @Persisted(primaryKey: true)
@@ -38,7 +39,7 @@ extension App.Inbox.Data {
         /// Initialise objet Realm à partir d'un message Domain
         /// Conserve id et data
         /// Objet pas encore enregistré en base
-        convenience init(from domain: App.Inbox.Domain.Message) {
+        convenience init(from domain: Inbox.Domain.Message) {
             self.init()
             self.id = domain.id
             self.sender = domain.sender
@@ -53,8 +54,8 @@ extension App.Inbox.Data {
         /// Convertit objet Realm en Domain indépendante de Realm
         ///
         /// ccRecipients convertie en tableau Swift
-        func toDomain() -> App.Inbox.Domain.Message {
-            return App.Inbox.Domain.Message(
+        func toDomain() -> Inbox.Domain.Message {
+            return Inbox.Domain.Message(
                 id: self.id,
                 sender: self.sender,
                 recipient: self.recipient,

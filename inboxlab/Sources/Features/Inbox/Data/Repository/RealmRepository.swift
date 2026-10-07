@@ -7,15 +7,16 @@
 
 import Foundation
 import RealmSwift
+import InboxDomain
 
-extension App.Inbox.Data {
-    final class RealmRepository: App.Inbox.Domain.Providing {
+extension Inbox.Data {
+    final class RealmRepository: Inbox.Domain.Providing {
         private let realm: Realm
-        private let fetching: App.Inbox.Domain.Fetching
+        private let fetching: Inbox.Domain.Fetching
         
         init(
             realm: Realm,
-            fetching: App.Inbox.Domain.Fetching
+            fetching: Inbox.Domain.Fetching
         ) {
             self.realm = realm
             self.fetching = fetching
@@ -29,8 +30,8 @@ extension App.Inbox.Data {
         /// Objets Realm -> Modèles Domain
         ///
         /// - returns: flux listes de message
-        func observe() -> AsyncStream<[App.Inbox.Domain.Message]> {
-            let results = realm.objects(App.Inbox.Data.MessageObject.self)
+        func observe() -> AsyncStream<[Inbox.Domain.Message]> {
+            let results = realm.objects(Inbox.Data.MessageObject.self)
             return AsyncStream { continuation in
                 let token = results.observe { change in
                     switch change {
@@ -56,7 +57,7 @@ extension App.Inbox.Data {
         /// - params(id): id message à edit
         /// - throws: erreur si transaction d'écriture échoue
         func markAsRead(id: Int) async throws {
-            guard let message = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: id),
+            guard let message = realm.object(ofType: Inbox.Data.MessageObject.self, forPrimaryKey: id),
                   !message.hasBeenRead else { return }
             
             try realm.write {
@@ -70,10 +71,10 @@ extension App.Inbox.Data {
         ///
         /// - params(messages): messages à enregistrer
         /// - throws: erreur si transaction d'écriture échoue
-        func save(messages: [App.Inbox.Domain.Message]) throws {
+        func save(messages: [Inbox.Domain.Message]) throws {
             // conversion
             let objects = messages.map {
-                App.Inbox.Data.MessageObject(from: $0)
+                Inbox.Data.MessageObject(from: $0)
             }
             
             // save
@@ -91,7 +92,7 @@ extension App.Inbox.Data {
             let messagesToSave = messages.map { message in
                 var updatedMessage = message
                 
-                if let existing = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: message.id) {
+                if let existing = realm.object(ofType: Inbox.Data.MessageObject.self, forPrimaryKey: message.id) {
                     updatedMessage.hasBeenRead = existing.hasBeenRead
                 }
                 return updatedMessage

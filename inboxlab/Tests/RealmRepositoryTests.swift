@@ -9,6 +9,7 @@ import Testing
 import RealmSwift
 import Foundation
 @testable import inboxlab
+@testable import InboxDomain
 
 @Suite("Realm Repository Tests")
 struct RealmRepositoryTests {
@@ -17,12 +18,12 @@ struct RealmRepositoryTests {
     func savingMessagePreservesItsData() throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try Realm(configuration: configuration)
-        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
-        let unread = App.Inbox.Domain.Message.mockUnread
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
+        let unread = Inbox.Domain.Message.mockUnread
         
         try sut.save(messages: [unread])
         
-        let object = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
+        let object = realm.object(ofType: Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
         let result = try #require(object)
         let objectToDomain = result.toDomain()
         
@@ -40,8 +41,8 @@ struct RealmRepositoryTests {
     func savingSameMessageTwiceUpdateWithoutDuplicating() throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try Realm(configuration: configuration)
-        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
-        let unread = App.Inbox.Domain.Message.mockUnread
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
+        let unread = Inbox.Domain.Message.mockUnread
         
         try sut.save(messages: [unread])
         
@@ -49,7 +50,7 @@ struct RealmRepositoryTests {
         editedMessage.hasBeenRead = true
         try sut.save(messages: [editedMessage])
         
-        let objects = realm.objects(App.Inbox.Data.MessageObject.self)
+        let objects = realm.objects(Inbox.Data.MessageObject.self)
         #expect(objects.count == 1)
         
         let object = try #require(objects.first)
@@ -61,13 +62,13 @@ struct RealmRepositoryTests {
     func markAsReadUpdatesStoredMessage() async throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try await Realm(configuration: configuration)
-        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
-        let unread = App.Inbox.Domain.Message.mockUnread
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
+        let unread = Inbox.Domain.Message.mockUnread
         
         try sut.save(messages: [unread])
         try await sut.markAsRead(id: unread.id)
         
-        let object = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
+        let object = realm.object(ofType: Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
         let result = try #require(object)
         
         #expect(result.hasBeenRead)
@@ -77,8 +78,8 @@ struct RealmRepositoryTests {
     func observeEmitsUpdatedReadStatus() async throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try await Realm(configuration: configuration)
-        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
-        let unread = App.Inbox.Domain.Message.mockUnread
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: MessageFetcherStub(messages: []))
+        let unread = Inbox.Domain.Message.mockUnread
         
         try sut.save(messages: [unread])
         let stream = sut.observe()
@@ -102,17 +103,17 @@ struct RealmRepositoryTests {
     func refreshStoresFetchedMessages() async throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try await Realm(configuration: configuration)
-        let unread = App.Inbox.Domain.Message.mockUnread
+        let unread = Inbox.Domain.Message.mockUnread
         
         let fetcher = MessageFetcherStub(messages: [unread])
-        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
         
         try await sut.refresh()
         
-        let objects = realm.objects(App.Inbox.Data.MessageObject.self)
+        let objects = realm.objects(Inbox.Data.MessageObject.self)
         #expect(objects.count == 1)
         
-        let object = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
+        let object = realm.object(ofType: Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
         let result = try #require(object)
         
         #expect(result.id == unread.id)
@@ -123,10 +124,10 @@ struct RealmRepositoryTests {
     func refreshFailurePreservesStoredMessages() async throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try await Realm(configuration: configuration)
-        let unread = App.Inbox.Domain.Message.mockUnread
+        let unread = Inbox.Domain.Message.mockUnread
         
         let fetcher = FailingMessageFetcherStub()
-        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
         
         try sut.save(messages: [unread])
         
@@ -134,10 +135,10 @@ struct RealmRepositoryTests {
             try await sut.refresh()
         }
         
-        let objects = realm.objects(App.Inbox.Data.MessageObject.self)
+        let objects = realm.objects(Inbox.Data.MessageObject.self)
         #expect(objects.count == 1)
         
-        let object = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
+        let object = realm.object(ofType: Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
         let result = try #require(object)
         
         #expect(result.id == unread.id)
@@ -148,10 +149,10 @@ struct RealmRepositoryTests {
     func refreshPreservesReadStatus() async throws {
         let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
         let realm = try await Realm(configuration: configuration)
-        let unread = App.Inbox.Domain.Message.mockUnread
+        let unread = Inbox.Domain.Message.mockUnread
         
         let fetcher = MessageFetcherStub(messages: [unread])
-        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
         
         var copy = unread
         copy.hasBeenRead = true
@@ -159,10 +160,10 @@ struct RealmRepositoryTests {
         try sut.save(messages: [copy])
         try await sut.refresh()
         
-        let objects = realm.objects(App.Inbox.Data.MessageObject.self)
+        let objects = realm.objects(Inbox.Data.MessageObject.self)
         #expect(objects.count == 1)
 
-        let object = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
+        let object = realm.object(ofType: Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
         let result = try #require(object)
         #expect(result.id == unread.id)
         #expect(result.hasBeenRead)

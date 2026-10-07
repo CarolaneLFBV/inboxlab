@@ -6,15 +6,16 @@
 //
 
 import Foundation
+import InboxDomain
 @testable import inboxlab
 
-final class FailingMessageFetcherStub: App.Inbox.Domain.Fetching {
+final class FailingMessageFetcherStub: Inbox.Domain.Fetching {
     enum Error: Swift.Error {
        case networkUnavailable
     }
     
     
-    func fetchMessages() async throws -> [App.Inbox.Domain.Message] {
+    func fetchMessages() async throws -> [Inbox.Domain.Message] {
         throw Error.networkUnavailable
     }
 }

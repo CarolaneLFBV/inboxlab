@@ -6,14 +6,15 @@
 //
 
 import Foundation
+import InboxDomain
 
-extension App.Inbox.Data {
-    final class InMemoryRepository: App.Inbox.Domain.Providing {
-        private var messages: [App.Inbox.Domain.Message]
+extension Inbox.Data {
+    final class InMemoryRepository: Inbox.Domain.Providing {
+        private var messages: [Inbox.Domain.Message]
         // Conserve une continuation par abonnement pour diffuser les changements de messages à chaque observateur
-        private var continuations: [UUID: AsyncStream<[App.Inbox.Domain.Message]>.Continuation] = [:]
+        private var continuations: [UUID: AsyncStream<[Inbox.Domain.Message]>.Continuation] = [:]
         
-        init(messages: [App.Inbox.Domain.Message]) {
+        init(messages: [Inbox.Domain.Message]) {
             self.messages = messages
         }
         
@@ -23,7 +24,7 @@ extension App.Inbox.Data {
         /// reçoit la liste actuelle des messages
         ///
         /// - returns: flux dont chaque valeur = liste de messages
-        func observe() -> AsyncStream<[App.Inbox.Domain.Message]> {
+        func observe() -> AsyncStream<[Inbox.Domain.Message]> {
             return AsyncStream { continuation in
                 let id = UUID()
                 continuations[id] = continuation // conserve continuation -> send futur updates

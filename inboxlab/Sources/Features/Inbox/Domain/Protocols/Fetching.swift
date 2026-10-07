@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension App.Inbox.Domain {
+public extension Inbox.Domain {
     protocol Fetching {
-        func fetchMessages() async throws -> [App.Inbox.Domain.Message]
+        func fetchMessages() async throws -> [Inbox.Domain.Message]
     }
 }

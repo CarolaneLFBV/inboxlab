@@ -1,13 +1,14 @@
 import Testing
 @testable import inboxlab
+import InboxDomain
 
 @Suite("Inbox Lab Tests")
 struct InboxlabTests {
     
     @Test @MainActor
     func bothObserversReceiveReadStatusUpdate() async throws {
-        let message = App.Inbox.Domain.Message.mockUnread
-        let sut = App.Inbox.Data.InMemoryRepository(messages: [message])
+        let message = Inbox.Domain.Message.mockUnread
+        let sut = Inbox.Data.InMemoryRepository(messages: [message])
         
         let stream1 = sut.observe()
         let stream2 = sut.observe()
@@ -56,8 +57,8 @@ struct InboxlabTests {
     
     @Test @MainActor
     func remainingObserverReceivesUpdatesAfterCancellation() async throws {
-        let unread = App.Inbox.Domain.Message.mockUnread
-        let sut = App.Inbox.Data.InMemoryRepository(messages: [unread])
+        let unread = Inbox.Domain.Message.mockUnread
+        let sut = Inbox.Data.InMemoryRepository(messages: [unread])
         
         let detailStream = sut.observe()
         let listStream = sut.observe()

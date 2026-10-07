@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension App.Inbox.Domain {
+public extension Inbox.Domain {
     protocol Providing {
-        func observe() -> AsyncStream<[App.Inbox.Domain.Message]>
+        func observe() -> AsyncStream<[Inbox.Domain.Message]>
         func markAsRead(id: Int) async throws
         func refresh() async throws
     }
