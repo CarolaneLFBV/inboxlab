@@ -52,8 +52,8 @@ Les tests peuvent être lancés depuis Xcode avec ⌘U.
 
 ## Prochaines étapes
 
-- Tester le repository Realm avec une base en mémoire.
-- Ajouter une source distante avec Alamofire.
-- Gérer la synchronisation et les erreurs réseau.
-- Extraire les responsabilités en modules Tuist.
-- Explorer l’intégration d’un composant UIKit.
+- [x] Tester le repository Realm avec une base en mémoire.
+- [x] Ajouter une source distante avec Alamofire.
+- [ ] Gérer la synchronisation et les erreurs réseau.
+- [x] Extraire les responsabilités en modules Tuist.
+- [ ] Explorer l’intégration d’un composant UIKit.
