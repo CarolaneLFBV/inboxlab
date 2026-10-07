@@ -14,6 +14,5 @@ extension App {
 }
 
 extension Inbox {
-    enum Data {}
     enum Presentation {}
 }

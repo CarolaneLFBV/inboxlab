@@ -9,12 +9,12 @@ import Foundation
 import RealmSwift
 import InboxDomain
 
-extension Inbox.Data {
+public extension Inbox.Data {
     final class RealmRepository: Inbox.Domain.Providing {
         private let realm: Realm
         private let fetching: Inbox.Domain.Fetching
         
-        init(
+        public init(
             realm: Realm,
             fetching: Inbox.Domain.Fetching
         ) {
@@ -30,7 +30,7 @@ extension Inbox.Data {
         /// Objets Realm -> Modèles Domain
         ///
         /// - returns: flux listes de message
-        func observe() -> AsyncStream<[Inbox.Domain.Message]> {
+        public func observe() -> AsyncStream<[Inbox.Domain.Message]> {
             let results = realm.objects(Inbox.Data.MessageObject.self)
             return AsyncStream { continuation in
                 let token = results.observe { change in
@@ -56,7 +56,7 @@ extension Inbox.Data {
         ///
         /// - params(id): id message à edit
         /// - throws: erreur si transaction d'écriture échoue
-        func markAsRead(id: Int) async throws {
+        public func markAsRead(id: Int) async throws {
             guard let message = realm.object(ofType: Inbox.Data.MessageObject.self, forPrimaryKey: id),
                   !message.hasBeenRead else { return }
             
@@ -71,7 +71,7 @@ extension Inbox.Data {
         ///
         /// - params(messages): messages à enregistrer
         /// - throws: erreur si transaction d'écriture échoue
-        func save(messages: [Inbox.Domain.Message]) throws {
+        public func save(messages: [Inbox.Domain.Message]) throws {
             // conversion
             let objects = messages.map {
                 Inbox.Data.MessageObject(from: $0)
@@ -87,7 +87,7 @@ extension Inbox.Data {
         /// Changements diffusés par observation de la base
         ///
         /// - throws: erreur récupération ou sauvegarde
-        func refresh() async throws {
+        public func refresh() async throws {
             let messages = try await fetching.fetchMessages()
             let messagesToSave = messages.map { message in
                 var updatedMessage = message

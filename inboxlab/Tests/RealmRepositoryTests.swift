@@ -10,6 +10,7 @@ import RealmSwift
 import Foundation
 @testable import inboxlab
 @testable import InboxDomain
+@testable import InboxData
 
 @Suite("Realm Repository Tests")
 struct RealmRepositoryTests {

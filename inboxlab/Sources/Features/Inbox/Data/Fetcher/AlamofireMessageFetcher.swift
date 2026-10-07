@@ -15,9 +15,11 @@ private extension Inbox.Data.AlamofireMessageFetcher {
     }
 }
 
-extension Inbox.Data {
+public extension Inbox.Data {
     final class AlamofireMessageFetcher: Inbox.Domain.Fetching {
-        func fetchMessages() async throws -> [Inbox.Domain.Message] {
+        public init() {}
+        
+        public func fetchMessages() async throws -> [Inbox.Domain.Message] {
             let request = AF.request(Constants.url, method: .get).validate() // validate => vérification statut HTTP (200..299) + content accepté
             let responses = try await request.serializingDecodable([Inbox.Data.MessageResponse].self).value
             let mappedResponse = responses.map { response in

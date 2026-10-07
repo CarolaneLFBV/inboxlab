@@ -8,12 +8,12 @@
 import Foundation
 import InboxDomain
 
-extension Inbox.Data {
+public extension Inbox.Data {
     nonisolated struct MessageResponse: Decodable {
-        let id: Int
-        let sender: String
-        let subject: String
-        let content: String
+        public let id: Int
+        public let sender: String
+        public let subject: String
+        public let content: String
         
         enum CodingKeys: String, CodingKey {
             case id
@@ -22,7 +22,7 @@ extension Inbox.Data {
             case content = "body"
         }
         
-        func toDomain() -> Inbox.Domain.Message {
+        public func toDomain() -> Inbox.Domain.Message {
             Inbox.Domain.Message(
                 id: self.id,
                 sender: self.sender,

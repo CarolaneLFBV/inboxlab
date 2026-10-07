@@ -9,7 +9,7 @@ import Foundation
 import RealmSwift
 import InboxDomain
 
-extension Inbox.Data {
+public extension Inbox.Data {
     @objc(InboxMessageObject)
     class MessageObject: Object {
         @Persisted(primaryKey: true)

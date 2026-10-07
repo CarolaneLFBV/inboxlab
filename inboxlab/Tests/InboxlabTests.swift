@@ -1,6 +1,7 @@
 import Testing
 @testable import inboxlab
-import InboxDomain
+@testable import InboxDomain
+@testable import InboxData
 
 @Suite("Inbox Lab Tests")
 struct InboxlabTests {
