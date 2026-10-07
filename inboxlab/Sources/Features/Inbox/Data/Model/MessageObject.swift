@@ -12,7 +12,7 @@ extension App.Inbox.Data {
     @objc(InboxMessageObject)
     class MessageObject: Object {
         @Persisted(primaryKey: true)
-        var id: UUID
+        var id: Int
         
         @Persisted
         var sender: String

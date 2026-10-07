@@ -143,4 +143,28 @@ struct RealmRepositoryTests {
         #expect(result.id == unread.id)
         #expect(!result.hasBeenRead)
     }
+    
+    @Test @MainActor
+    func refreshPreservesReadStatus() async throws {
+        let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
+        let realm = try await Realm(configuration: configuration)
+        let unread = App.Inbox.Domain.Message.mockUnread
+        
+        let fetcher = MessageFetcherStub(messages: [unread])
+        let sut = App.Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
+        
+        var copy = unread
+        copy.hasBeenRead = true
+        
+        try sut.save(messages: [copy])
+        try await sut.refresh()
+        
+        let objects = realm.objects(App.Inbox.Data.MessageObject.self)
+        #expect(objects.count == 1)
+
+        let object = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: unread.id)
+        let result = try #require(object)
+        #expect(result.id == unread.id)
+        #expect(result.hasBeenRead)
+    }
 }

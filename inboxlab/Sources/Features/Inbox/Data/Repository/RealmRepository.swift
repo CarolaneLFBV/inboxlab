@@ -55,7 +55,7 @@ extension App.Inbox.Data {
         ///
         /// - params(id): id message à edit
         /// - throws: erreur si transaction d'écriture échoue
-        func markAsRead(id: UUID) async throws {
+        func markAsRead(id: Int) async throws {
             guard let message = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: id),
                   !message.hasBeenRead else { return }
             
@@ -88,7 +88,16 @@ extension App.Inbox.Data {
         /// - throws: erreur récupération ou sauvegarde
         func refresh() async throws {
             let messages = try await fetching.fetchMessages()
-            try save(messages: messages)
+            let messagesToSave = messages.map { message in
+                var updatedMessage = message
+                
+                if let existing = realm.object(ofType: App.Inbox.Data.MessageObject.self, forPrimaryKey: message.id) {
+                    updatedMessage.hasBeenRead = existing.hasBeenRead
+                }
+                return updatedMessage
+                
+            }
+            try save(messages: messagesToSave)
         }
     }
 }

@@ -41,7 +41,7 @@ extension App.Inbox.Data {
         /// Marque message identifié comme lu et diffuse la liste updated
         ///
         /// - params(id): id message à marquer comme lu
-        func markAsRead(id: UUID) async throws {
+        func markAsRead(id: Int) async throws {
             guard let index = messages.firstIndex(where: { $0.id == id}) else { return }
             guard messages[index].hasBeenRead == false else { return }
             messages[index].hasBeenRead = true

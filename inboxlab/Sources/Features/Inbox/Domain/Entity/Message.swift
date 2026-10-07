@@ -9,7 +9,7 @@ import Foundation
 
 extension App.Inbox.Domain {
     struct Message: Identifiable {
-        let id: UUID
+        let id: Int
         let sender: String
         let recipient: String
         let ccRecipients: [String]

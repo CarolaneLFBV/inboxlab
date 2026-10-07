@@ -10,7 +10,7 @@ import Foundation
 extension App.Inbox.Domain.Message {
     static var mockUnread: Self {
         Self(
-            id: UUID(uuidString: "11111111-1111-4111-8111-111111111111")!,
+            id: 123,
             sender: "alice@example.com",
             recipient: "carolane@example.com",
             ccRecipients: [],
@@ -23,7 +23,7 @@ extension App.Inbox.Domain.Message {
 
     static var mockRead: Self {
         Self(
-            id: UUID(uuidString: "22222222-2222-4222-8222-222222222222")!,
+            id: 456,
             sender: "bob@example.com",
             recipient: "carolane@example.com",
             ccRecipients: ["alice@example.com"],

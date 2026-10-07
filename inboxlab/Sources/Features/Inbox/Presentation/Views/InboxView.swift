@@ -23,6 +23,24 @@ extension App.Inbox.Presentation {
                     .task {
                         await viewModel.observeMessages()
                     }
+                    .refreshable {
+                        await viewModel.refreshMessages()
+                    }
+                    .alert(
+                        "Erreur de rafraîchissement",
+                        isPresented: Binding(
+                            get: { viewModel.errorMessage != nil },
+                            set: { isPresented in
+                                if !isPresented { viewModel.dismissError() }
+                            }
+                        )
+                    ) {
+                        Button("OK", role: .cancel) {
+                            viewModel.dismissError()
+                        }
+                    } message: {
+                        Text(viewModel.errorMessage ?? "Veuillez réessayer")
+                    }
             }
         }
     }

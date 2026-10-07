@@ -6,6 +6,10 @@ let project = Project(
         .remote(
             url: "https://github.com/realm/realm-swift",
             requirement: .exact("20.0.6")
+        ),
+        .remote(
+            url: "https://github.com/Alamofire/Alamofire",
+            requirement: .exact("5.12.2")
         )
     ],
     targets: [
@@ -28,7 +32,8 @@ let project = Project(
                 "inboxlab/Resources",
             ],
             dependencies: [
-                .package(product: "RealmSwift")
+                .package(product: "RealmSwift", type: .runtimeEmbedded),
+                .package(product: "Alamofire")
             ],
             settings: .settings(
                 base: ["SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor"]
@@ -46,7 +51,8 @@ let project = Project(
             ],
             dependencies: [
                 .target(name: "inboxlab"),
-                .package(product: "RealmSwift")
+                .package(product: "RealmSwift"),
+                .package(product: "Alamofire")
             ],
             settings: .settings(
                 base: [

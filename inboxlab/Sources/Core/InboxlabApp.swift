@@ -9,7 +9,7 @@ struct App: SwiftUI.App {
     init() {
         do {
             let realm = try Realm()
-            let fetching = App.Inbox.Data.PreviewFetcher(messages: App.Inbox.Domain.Message.mocks) // temporary
+            let fetching = App.Inbox.Data.AlamofireMessageFetcher()
             let repository = App.Inbox.Data.RealmRepository(
                 realm: realm,
                 fetching: fetching

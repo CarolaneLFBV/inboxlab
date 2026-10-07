@@ -12,6 +12,7 @@ extension App.Inbox.Presentation {
     final class ViewModel {
         private let repository: App.Inbox.Domain.Providing
         private(set) var messages: [App.Inbox.Domain.Message] = []
+        private(set) var errorMessage: String? = nil
         
         init(repository: App.Inbox.Domain.Providing) {
             self.repository = repository
@@ -25,8 +26,21 @@ extension App.Inbox.Presentation {
             }
         }
         
-        func markMessageAsRead(id: UUID) async throws {
+        func markMessageAsRead(id: Int) async throws {
             try await repository.markAsRead(id: id)
+        }
+        
+        func refreshMessages() async {
+            dismissError()
+            do {
+                try await repository.refresh()
+            } catch(let error) {
+                errorMessage = error.localizedDescription
+            }
+        }
+        
+        func dismissError() {
+            errorMessage = nil
         }
     }
 }
