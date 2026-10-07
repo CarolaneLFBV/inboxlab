@@ -8,15 +8,15 @@
 import SwiftUI
 import InboxDomain
 
-extension Inbox.Presentation {
+public extension Inbox.Presentation {
     struct View: SwiftUI.View {
         @State private var viewModel: Inbox.Presentation.ViewModel
         
-        init(viewModel: Inbox.Presentation.ViewModel) {
+        public init(viewModel: Inbox.Presentation.ViewModel) {
             _viewModel = State(initialValue: viewModel)
         }
         
-        var body: some SwiftUI.View {
+        public var body: some SwiftUI.View {
             NavigationStack {
                 content
                     .task {

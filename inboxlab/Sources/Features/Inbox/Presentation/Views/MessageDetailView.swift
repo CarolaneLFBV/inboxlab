@@ -8,7 +8,7 @@
 import SwiftUI
 import InboxDomain
 
-extension Inbox.Presentation {
+public extension Inbox.Presentation {
     struct MessageDetailView: SwiftUI.View {
         @State private var errorMessage: String?
         let message: Inbox.Domain.Message
@@ -18,7 +18,7 @@ extension Inbox.Presentation {
             message.receivedAt.formatted(date: .abbreviated, time: .shortened)
         }
         
-        var body: some SwiftUI.View {
+        public var body: some SwiftUI.View {
             ScrollView {
                 mailInformations
                 mailSubject

@@ -29,7 +29,6 @@ let project = Project(
             ),
             buildableFolders: [
                 "inboxlab/Sources/Core",
-                "inboxlab/Sources/Features/Inbox/Presentation",
                 "inboxlab/Resources",
             ],
             dependencies: [
@@ -37,6 +36,7 @@ let project = Project(
                 .package(product: "Alamofire"),
                 .target(name: "InboxDomain"),
                 .target(name: "InboxData"),
+                .target(name: "InboxPresentation")
             ],
             settings: .settings(
                 base: ["SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor"]
@@ -56,6 +56,7 @@ let project = Project(
                 .target(name: "inboxlab"),
                 .target(name: "InboxData"),
                 .target(name: "InboxDomain"),
+                .target(name: "InboxPresentation"),
                 .package(product: "RealmSwift"),
                 .package(product: "Alamofire")
             ],
@@ -93,6 +94,22 @@ let project = Project(
             settings: .settings(
                 base: ["SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor"]
             )
-        )
+        ),
+        .target(
+            name: "InboxPresentation",
+            destinations: .iOS,
+            product: .framework,
+            bundleId: "dev.tuist.inboxlab.presentation",
+            deploymentTargets: .iOS("18.0"),
+            buildableFolders: [
+                "inboxlab/Sources/Features/Inbox/Presentation",
+            ],
+            dependencies: [
+                .target(name: "InboxDomain"),
+            ],
+            settings: .settings(
+                base: ["SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor"]
+            )
+        ),
     ]
 )

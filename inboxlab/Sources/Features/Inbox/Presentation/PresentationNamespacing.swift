@@ -8,7 +8,6 @@
 import Foundation
 import InboxDomain
 
-extension App {
-    enum Core {}
-    enum DesignSystem {}
+public extension Inbox {
+    enum Presentation {}
 }

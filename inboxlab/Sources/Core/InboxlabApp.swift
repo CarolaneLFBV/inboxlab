@@ -2,6 +2,7 @@ import SwiftUI
 import RealmSwift
 import InboxDomain
 import InboxData
+import InboxPresentation
 
 @main
 struct App: SwiftUI.App {
