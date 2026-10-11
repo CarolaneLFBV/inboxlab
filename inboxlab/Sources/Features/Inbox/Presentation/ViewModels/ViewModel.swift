@@ -15,6 +15,11 @@ public extension Inbox.Presentation {
         private(set) var messages: [Inbox.Domain.Message] = []
         private(set) var errorMessage: String? = nil
         
+        public var searchText: String = ""
+        public private(set) var searchResults: [Inbox.Domain.Message] = []
+        private var activeSearchID: UUID? = nil
+        private(set) var searchTask: Task<Void, Never>? = nil
+        
         public init(repository: Inbox.Domain.Providing) {
             self.repository = repository
         }
@@ -42,6 +47,35 @@ public extension Inbox.Presentation {
         
         public func dismissError() {
             errorMessage = nil
+        }
+        
+        public func searchMessages() {
+            searchTask?.cancel()
+            activeSearchID = nil
+            let query = searchText
+            
+            if query.isEmpty {
+                searchResults = []
+                return
+            }
+            
+            let searchID = UUID()
+            activeSearchID = searchID
+            searchTask = Task {
+                do {
+                    try await Task.sleep(for: .milliseconds(300))
+                    let results = try await repository.searchMessages(query: query)
+                    guard activeSearchID == searchID else { return }
+                    try Task.checkCancellation()
+                    searchResults = results
+                } catch is CancellationError {
+                    return
+                } catch {
+                    guard activeSearchID == searchID,
+                        !Task.isCancelled else { return }
+                    errorMessage = error.localizedDescription
+                }
+            }
         }
     }
 }

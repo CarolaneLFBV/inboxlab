@@ -169,4 +169,48 @@ struct RealmRepositoryTests {
         #expect(result.id == unread.id)
         #expect(result.hasBeenRead)
     }
+    
+    @Test @MainActor
+    func searchMatchesSubjectIgnoringCase() async throws {
+        let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
+        let realm = try await Realm(configuration: configuration)
+        
+        let fetcher = MessageFetcherStub(messages: [])
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
+        
+        try sut.save(messages: Inbox.Domain.Message.mocks)
+        let searchResult = try await sut.searchMessages(query: "BIENVENUE")
+        
+        #expect(searchResult.count == 1)
+        #expect(searchResult.first?.id == Inbox.Domain.Message.mockUnread.id)
+    }
+    
+    @Test @MainActor
+    func searchMatchesContentIgnoringCase() async throws {
+        let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
+        let realm = try await Realm(configuration: configuration)
+        
+        let fetcher = MessageFetcherStub(messages: [])
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
+        
+        try sut.save(messages: Inbox.Domain.Message.mocks)
+        let searchResult = try await sut.searchMessages(query: "CONTINUER")
+        
+        #expect(searchResult.count == 1)
+        #expect(searchResult.first?.id == Inbox.Domain.Message.mockRead.id)
+    }
+    
+    @Test @MainActor
+    func searchReturnsEmptyWhenNoMatch() async throws {
+        let configuration = Realm.Configuration(inMemoryIdentifier: UUID().uuidString)
+        let realm = try await Realm(configuration: configuration)
+        
+        let fetcher = MessageFetcherStub(messages: [])
+        let sut = Inbox.Data.RealmRepository(realm: realm, fetching: fetcher)
+        
+        try sut.save(messages: Inbox.Domain.Message.mocks)
+        let searchResult = try await sut.searchMessages(query: "INTROUVABLE")
+        
+        #expect(searchResult.isEmpty)
+    }
 }

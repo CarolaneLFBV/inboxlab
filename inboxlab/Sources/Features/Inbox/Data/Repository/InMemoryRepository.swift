@@ -53,5 +53,13 @@ public extension Inbox.Data {
         
         /// Réalise aucune opération car les messages sont fournis en mémoire sans source distante à rafraîchir.
         public func refresh() async throws {}
+        
+        public func searchMessages(query: String) async throws -> [Inbox.Domain.Message] {
+            let filteredMessages = messages.filter { message in
+                message.subject.localizedStandardContains(query) ||
+                message.content.localizedStandardContains(query)
+            }
+            return filteredMessages
+        }
     }
 }

@@ -100,5 +100,23 @@ public extension Inbox.Data {
             }
             try save(messages: messagesToSave)
         }
+        
+        /// Récupère les résultats de la recherche à partir de realm et convertit en réponse lisible
+        ///
+        /// - params(query): query de la recherche
+        /// - returns: liste des résultats en message
+        public func searchMessages(query: String) async throws -> [Inbox.Domain.Message] {
+            let objects = realm.objects(Inbox.Data.MessageObject.self)
+            let filteredObjects = objects.filter { message in
+                message.subject.localizedCaseInsensitiveContains(query) ||
+                message.content.localizedCaseInsensitiveContains(query)
+            }
+            
+            let filteredMessages = filteredObjects.map { object in
+                object.toDomain()
+            }
+            
+            return Array(filteredMessages)
+        }
     }
 }
